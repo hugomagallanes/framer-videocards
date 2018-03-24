@@ -4,10 +4,10 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](.github/CONTRIBUTING.md)
 [![Maintenance](https://img.shields.io/maintenance/yes/2017.svg)]()
 
+<a href="https://open.framermodules.com/statusbarlayer"><img alt="Install with Framer Modules" src="https://www.framermodules.com/assets/badge@2x.png" width='160' height='40' /></a>
+
 
 The VideoCard modules allows you to instantly generate an video cards. 
-
-<img src="https://user-images.githubusercontent.com/935/28138062-118c3a22-6715-11e7-81a7-1ef1c9cf81ef.gif" width="500" style="display: block; margin: auto" alt="StatusBarLayer preview" />
 
 ### Installation
 
