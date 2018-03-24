@@ -4,8 +4,6 @@
 ############################################
 
 VideoCard = new VideoCard
-test = new VideoCard
 	source: "PSG.France"
 	description: "Lorem ipsum this is set"
 	format: "medium"
-	
