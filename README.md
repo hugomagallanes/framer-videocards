@@ -4,8 +4,6 @@
 [![PRs Welcome](https://img.shields.io/badge/PRs-welcome-brightgreen.svg)](.github/CONTRIBUTING.md)
 [![Maintenance](https://img.shields.io/maintenance/yes/2017.svg)]()
 
-<a href="https://open.framermodules.com/statusbarlayer"><img alt="Install with Framer Modules" src="https://www.framermodules.com/assets/badge@2x.png" width='160' height='40' /></a>
-
 
 The VideoCard modules allows you to instantly generate an video cards. 
 
@@ -24,8 +22,6 @@ In your Framer project, add the following:
 ```coffeescript
 # If you manually installed
 VideoCards = require "VideoCards"
-# else
-StatusBarLayer = require "@blackpixel/framer-statusbarlayer"
 ```
 
 ### API
