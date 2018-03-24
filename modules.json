@@ -1,0 +1,9 @@
+{
+    "name": "Videocards",
+    "description": "Module that allows to generate video cards with auto-loading previews",
+    "author": "Hugo Magalhães",
+
+    "require": "VideoCard = require 'videocard'",
+    "install": "videocard.coffee",
+
+}
