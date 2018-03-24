@@ -4,5 +4,6 @@
     "author": "Hugo Magalhães",
 
     "require": "VideoCard = require 'videocard'",
-    "install": "videocard.coffee"
+    "install": "videocard.coffee",
+    "example": "example.coffee"
 }
