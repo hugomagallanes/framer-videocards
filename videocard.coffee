@@ -5,10 +5,8 @@ Filename: videocard.coffee
 -
 Author: Hugo Magalhães
 Version: 1.0
-Updated: 23-03-2018
+Updated: 28-March-2018
 ###
-
-
 
 
 ###  ===================================================================
@@ -46,9 +44,9 @@ SmallCardWidth = 216
 SmallCardHeight = 216
 SmallCardPlayButton = 50
 
-SmallCardTextPadding = [8, 16, 8] # Padding -> (Top, Right/Left Bottom)
+SmallCardTextPadding = [10, 16, 11] # Padding -> (Top, Right/Left, Bottom)
 SmallCardText_source = 10 # Text (Font-size, Line-Height)
-SmallCardText_description = [13, 1.5]
+SmallCardText_header = [13, 1.5]
 
 
 #--> Medium card size
@@ -57,18 +55,20 @@ MediumCardHeight = 284
 MediumCardPlayButton = 70
 
 MediumCardTextPadding = [16, 16, 16]
-MediumCardText_source = 11
-MediumCardText_description = [14, 1.5]
+MediumCardText_source = 12
+MediumCardText_header = [16, 1.4]
 
 
 #--> Large card size
 LargeCardWidth = 456
-LargeCardHeight = 392
+LargeCardHeight = 408
 LargeCardPlayButton = 90
 
-LargeCardTextPadding = [24, 16, 16]
-LargeCardText_source = 12
-LargeCardText_description = [16, 1.5]
+LargeCardTextPadding = [16, 16, 16]
+LargeCardText_source = 13
+LargeCardText_header = [22, 1.5]
+
+LargeCardTest = 100
 
 
 #--> Automatically assigns a height based on a AspectRatio of a component
@@ -83,24 +83,12 @@ AspectRatio = (value) ->
 class VideoCard extends Layer
     constructor: (@options={}) ->
 
-      #--> SVG icon
-      svgProps =
-        color: @options.color || "white"
-
-      watchLater_icon =
-      """
-      	<svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16">
-          <path d="M8,14.7181009 L8,16 C3.58814634,16 0,12.4118537 0,8 C0,3.58814634 3.58814634,0 8,0 C12.4118537,0 16,3.58814634 16,8 C16,12.4118537 12.4118537,16 8,16 L8,14.7181009 C11.7038803,14.7181009 14.7181009,11.7038803 14.7181009,8 C14.7181009,4.29611967 11.7038803,1.28189911 8,1.28189911 C4.29611967,1.28189911 1.28189911,4.29611967 1.28189911,8 C1.28189911,11.7038803 4.29611967,14.7181009 8,14.7181009 Z M8.27058824,7.63820091 L11.1183104,9.79034662 L10.3522369,10.8040161 L7.03329787,8.29575163 L7,8.29575163 L7,4 L8.27058824,4 L8.27058824,7.63820091 Z" fill="#{svgProps.color}" fill-rule="nonzero">
-          </path>
-      </svg>
-      """
 
       #--> Immutable defaults
       @options.shadowY = 2
       @options.shadowBlur = 4
       @options.shadowColor = "rgba(0,0,0,0.1)"
       @options.borderRadius = 4
-      @options.format ?= "small"
       @options.clip = true
 
       #--> Custom defaults
@@ -108,6 +96,7 @@ class VideoCard extends Layer
         width: SmallCardWidth
         height: SmallCardHeight
         backgroundColor: "white"
+        format: "small"
 
       ### ::::::::::::::::::::::::::::::::::::::::::::::::::
           UI COMPONENTS CREATION
@@ -124,7 +113,7 @@ class VideoCard extends Layer
             - Watch later
     	    b. Label
             - Source
-            - Description
+            - header
         ###
 
       @thumbnail = new Layer
@@ -144,7 +133,7 @@ class VideoCard extends Layer
       @playButton = new Layer
         name: "playButton"
         backgroundColor: "transparent"
-        image: "https://d2ffutrenqvap3.cloudfront.net/items/0t3j2v2g1p0V1H1I3A3s/playButton_loader.gif?v=85fb2b72"
+        image: "http://hugomagalhaes.design/framer/images/playButton_loader.gif"
         opacity: 0
 
       @timestamp = new TextLayer
@@ -159,11 +148,16 @@ class VideoCard extends Layer
         fontWeight: RetinaFont_Medium
         color: "white"
 
-      @watchLater = new Layer
-        html: watchLater_icon
-        backgroundColor: "transparent"
-        size: 16
-        opacity: 0
+      @watchLater = new SVGLayer
+      	svg:
+        """
+      	<svg viewBox="0 0 16 16">
+      	  <path
+      	  d="M8,14.7181009 L8,16 C3.58814634,16 0,12.4118537 0,8 C0,3.58814634 3.58814634,0 8,0 C12.4118537,0 16,3.58814634 16,8 C16,12.4118537 12.4118537,16 8,16 L8,14.7181009 C11.7038803,14.7181009 14.7181009,11.7038803 14.7181009,8 C14.7181009,4.29611967 11.7038803,1.28189911 8,1.28189911 C4.29611967,1.28189911 1.28189911,4.29611967 1.28189911,8 C1.28189911,11.7038803 4.29611967,14.7181009 8,14.7181009 Z M8.27058824,7.63820091 L11.1183104,9.79034662 L10.3522369,10.8040161 L7.03329787,8.29575163 L7,8.29575163 L7,4 L8.27058824,4 L8.27058824,7.63820091">
+          </path>
+        </svg>
+        """
+      	fill: "white"
 
       @label = new Layer
         name: "label"
@@ -184,13 +178,14 @@ class VideoCard extends Layer
         textTransform: "uppercase"
         color: color_grey
 
-      @description = new TextLayer
-        name: "description"
-        text: @options.description || "Description"
+      @header = new TextLayer
+        name: "header"
+        text: @options.header || "Video header"
 
         fontFamily: RetinaFont
         fontWeight: RetinaFont_Medium
         color: color_black
+        lineHeight: 1.5
 
       # Initiates component
       super @options
@@ -213,7 +208,7 @@ class VideoCard extends Layer
       @thumbnail.parent = @
       @thumbnail.width = @width
       @thumbnail.height = AspectRatio(@width)
-      @thumbnail.backgroundColor = "blue"
+      @thumbnail.backgroundColor = "lightgrey"
 
       #--> Video | Small
       @video.parent = @.thumbnail
@@ -238,8 +233,10 @@ class VideoCard extends Layer
 
       #--> Watch later | Small
       @watchLater.parent = @.thumbnail
+      @watchLater.size = 16
       @watchLater.x = Align.right(-8)
       @watchLater.y = 8
+      @watchLater.opacity = 0
 
       #--> Label | Small
       @label.parent = @
@@ -252,21 +249,24 @@ class VideoCard extends Layer
       @labelInner.width = @.label.width - (SmallCardTextPadding[1] * 2)
       @labelInner.height = @.label.height - (SmallCardTextPadding[0] + SmallCardTextPadding[2])
       @labelInner.point = Align.center
-      @labelInner.backgroundColor = "rgba(43,114,255,.25)"
+
+      # Uncomment line to see the label inner padding
+      # @labelInner.backgroundColor = "rgba(43,114,255,.25)"
 
       #--> Source | Small
       @source.parent = @.labelInner
       @source.fontSize = SmallCardText_source
       @source.width = @.labelInner.width
 
-      #--> Description | Small
-      @description.parent = @.labelInner
-      @description.fontSize = SmallCardText_description[0]
-      @description.width = @.labelInner.width
-      @description.y = @.source.maxY + 4
-      @description.height = 58
-      @description.backgroundColor = "orange"
-      @description.textOverflow = "ellipsis"
+      #--> Header | Small
+      @header.parent = @.labelInner
+      @header.fontSize = SmallCardText_header[0]
+      @header.width = @.labelInner.width
+      @header.y = @.source.maxY
+      @header.height = @.labelInner.height - @.source.height
+      @header.padding =
+        top: 4
+      @header.textOverflow = "ellipsis"
 
       ### ---------------------------
       |||--> Medium video card <--||||
@@ -278,15 +278,12 @@ class VideoCard extends Layer
         #--> Thumbnail | Medium
         @.thumbnail.width = MediumCardWidth
         @.thumbnail.height = AspectRatio(@width)
-        # @.thumbnail.backgroundColor = "orange"
 
         #--> Video | Medium
-        @video.parent = @.thumbnail
         @video.width = @.thumbnail.width
         @video.y = -16
 
         #--> Overlay | Medium
-        @overlay.parent = @.thumbnail
         @overlay.width = @.thumbnail.width
         @overlay.height = @.thumbnail.height
 
@@ -297,6 +294,10 @@ class VideoCard extends Layer
         #--> Timestamp | Medium
         @timestamp.x = Align.right(-8)
         @timestamp.y = Align.bottom(-8)
+
+        #--> Watch later | Medium
+        @watchLater.x = Align.right(-8)
+        @watchLater.y = 8
 
         #--> Label | Medium
         @label.width = @width
@@ -310,14 +311,76 @@ class VideoCard extends Layer
 
         #--> Source | Medium
         @source.fontSize = MediumCardText_source
-        @source.lineHeight = 1.75
         @source.width = @.labelInner.width
 
-        #--> Description | Medium
-        @description.fontSize = MediumCardText_description[0]
-        @description.lineHeight = MediumCardText_description[1]
-        @description.width = @.labelInner.width
-        @description.y = @.source.maxY + 4
+        #--> Header | Medium
+        @header.fontSize = MediumCardText_header[0]
+        @header.lineHeight = MediumCardText_header[1]
+        @header.width = @.labelInner.width
+        @header.y = @.source.maxY
+        @header.height = @.labelInner.height - @.source.height
+        @header.padding =
+          top: 4
+        @header.textOverflow = "ellipsis"
+
+
+      ### ---------------------------
+      |||--> Large video card <--||||
+      ---------------------------- ###
+
+      if @options.format is "large"
+        @.width = LargeCardWidth
+        @.height = LargeCardHeight
+
+        #--> Thumbnail | Large
+        @.thumbnail.width = LargeCardWidth
+        @.thumbnail.height = AspectRatio(@width)
+
+        #--> Video | Medium
+        @video.width = @.thumbnail.width
+        @video.height = @.thumbnail.height
+        @video.y = 0
+
+        #--> Overlay | Medium
+        @overlay.width = @.thumbnail.width
+        @overlay.height = @.thumbnail.height
+
+        #--> Play Button | Large
+        @playButton.size = LargeCardPlayButton
+        @playButton.point = Align.center
+
+        #--> Timestamp | Large
+        @timestamp.x = Align.right(-8)
+        @timestamp.y = Align.bottom(-8)
+
+        #--> Watch later | Large
+        @watchLater.size = 24
+        @watchLater.x = Align.right(-8)
+        @watchLater.y = 8
+
+        #--> Label | Large
+        @label.width = @width
+        @label.height = @height - @.thumbnail.height
+        @label.y = Align.bottom
+
+        #--> LabelInner | Large
+        @labelInner.width = @.label.width - (LargeCardTextPadding[1] * 2)
+        @labelInner.height = @.label.height - (LargeCardTextPadding[0] + LargeCardTextPadding[2])
+        @labelInner.point = Align.center
+
+        #--> Source | Large
+        @source.fontSize = LargeCardText_source
+        @source.width = @.labelInner.width
+
+        #--> Header | Large
+        @header.fontSize = LargeCardText_header[0]
+        @header.lineHeight = LargeCardText_header[1]
+        @header.width = @.labelInner.width
+        @header.y = @.source.maxY
+        @header.height = @.labelInner.height - @.source.height
+        @header.padding =
+          top: 4
+        @header.textOverflow = "ellipsis"
 
 
       ### ::::::::::::::::::::::::::::::::::::::::::::::::::
@@ -348,7 +411,7 @@ class VideoCard extends Layer
 
         else if @options.format is "large"
           @.width = LargeCardWidth
-          @.height = LargeCardHeightr
+          @.height = LargeCardHeight
 
 
     #--> Event functions
@@ -368,13 +431,14 @@ class VideoCard extends Layer
         @playButton.animate
           opacity: 1
 
-
         @watchLater.animate
           opacity: 1
           options:
             delay: .25
 
-        @.video.player.play()
+        Utils.delay .1,  =>
+          @.video.player.play()
+          @.video.player.loop = true
 
     PreviewOFF: =>
       @animate
@@ -396,12 +460,13 @@ class VideoCard extends Layer
         opacity: 0
 
       @.video.player.pause()
+      @.video.player.loop = false
 
       Utils.delay .25, =>
         @.video.player.currentTime = 0
 
-        ###--> Assigns a random number and tricks the page
-    		# into reloading the same component each time it plays ###
+        # ###--> Assigns a random number and tricks the page
+    		# # into reloading the same component each time it plays ###
         @.playButton.image = "http://hugomagalhaes.design//framer/videos/playButton_loader.gif" + "?a=" + Math.random()
 
 # Export the module
